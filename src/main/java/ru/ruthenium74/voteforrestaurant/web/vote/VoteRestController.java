@@ -1,8 +1,10 @@
 package ru.ruthenium74.voteforrestaurant.web.vote;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import ru.ruthenium74.voteforrestaurant.AuthorizedUser;
 import ru.ruthenium74.voteforrestaurant.model.Vote;
 import ru.ruthenium74.voteforrestaurant.repository.CrudRestaurantRepository;
 import ru.ruthenium74.voteforrestaurant.repository.CrudUserRepository;
@@ -26,9 +28,11 @@ public class VoteRestController {
     }
 
     @PostMapping("/{id}/votes")
+    @ResponseStatus(HttpStatus.CREATED)
     @Transactional
     public void vote(@PathVariable int id) {
-        Vote vote = new Vote(null, userRepository.getOne(100000), restaurantRepository.getOne(id));
+        Vote vote = new Vote(null, userRepository.getOne(AuthorizedUser.getAuthorizedUserId()),
+                restaurantRepository.getOne(id));
         voteRepository.save(vote);
     }
 
