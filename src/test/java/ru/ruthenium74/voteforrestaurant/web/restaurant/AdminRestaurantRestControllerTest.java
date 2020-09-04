@@ -7,7 +7,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import ru.ruthenium74.voteforrestaurant.RestaurantTestData;
 import ru.ruthenium74.voteforrestaurant.exception.ErrorType;
 import ru.ruthenium74.voteforrestaurant.model.Restaurant;
 import ru.ruthenium74.voteforrestaurant.repository.CrudRestaurantRepository;
@@ -15,7 +14,7 @@ import ru.ruthenium74.voteforrestaurant.web.AbstractRestControllerTest;
 import ru.ruthenium74.voteforrestaurant.web.json.JsonUtil;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static ru.ruthenium74.voteforrestaurant.RestaurantTestData.RESTAURANT_MATCHER;
+import static ru.ruthenium74.voteforrestaurant.RestaurantTestData.*;
 import static ru.ruthenium74.voteforrestaurant.TestUtil.readFromJson;
 import static ru.ruthenium74.voteforrestaurant.util.ValidationUtil.RESTAURANT_UNIQUE_NAME_CONSTRAINT;
 
@@ -26,12 +25,12 @@ public class AdminRestaurantRestControllerTest extends AbstractRestControllerTes
 
     @Test
     void create() throws Exception {
-        Restaurant newRestaurant = RestaurantTestData.getNew();
+        Restaurant newRestaurant = getNew();
 
         ResultActions resultActions = perform(MockMvcRequestBuilders.post(AdminRestaurantRestController.REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(newRestaurant)))
-                .andExpect(status().isCreated());
+                .content(JsonUtil.writeValue(newRestaurant))
+        ).andExpect(status().isCreated());
 
         Restaurant created = readFromJson(resultActions, Restaurant.class);
         int id = created.getId();
@@ -43,7 +42,7 @@ public class AdminRestaurantRestControllerTest extends AbstractRestControllerTes
     @Test
     @Transactional(propagation = Propagation.NEVER)
     void createDuplicate() throws Exception {
-        Restaurant newRestaurant = RestaurantTestData.getNew();
+        Restaurant newRestaurant = getNew();
 
         perform(MockMvcRequestBuilders.post(AdminRestaurantRestController.REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -52,9 +51,22 @@ public class AdminRestaurantRestControllerTest extends AbstractRestControllerTes
 
         perform(MockMvcRequestBuilders.post(AdminRestaurantRestController.REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(newRestaurant)))
-                .andExpect(status().isConflict())
+                .content(JsonUtil.writeValue(newRestaurant))
+        ).andExpect(status().isConflict())
                 .andExpect(errorType(ErrorType.VALIDATION_ERROR))
                 .andExpect(detailMessage(RESTAURANT_UNIQUE_NAME_CONSTRAINT));
+    }
+
+    @Test
+    void update() throws Exception {
+        Restaurant updated = getUpdated();
+
+        perform(MockMvcRequestBuilders
+                .put(AdminRestaurantRestController.REST_URL + "/" + updated.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(getUpdated()))
+        ).andExpect(status().isNoContent());
+
+        RESTAURANT_MATCHER.assertMatch(restaurantRepository.findById(updated.getId()).orElseThrow(), updated);
     }
 }

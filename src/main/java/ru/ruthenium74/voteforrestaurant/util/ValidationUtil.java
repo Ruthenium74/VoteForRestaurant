@@ -2,6 +2,8 @@ package ru.ruthenium74.voteforrestaurant.util;
 
 import org.slf4j.Logger;
 import ru.ruthenium74.voteforrestaurant.exception.ErrorType;
+import ru.ruthenium74.voteforrestaurant.exception.IllegalRequestDataException;
+import ru.ruthenium74.voteforrestaurant.model.AbstractBaseEntity;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
@@ -20,6 +22,20 @@ public class ValidationUtil {
                     RESTAURANT_UNIQUE_NAME_CONSTRAINT, "Restaurant with this name already exists.",
                     USER_UNIQUE_EMAIL_CONSTRAINT, "User with this email already exists.",
                     USER_ROLE_CONSTRAINT, "User already has this role.");
+
+    public static void checkNew(AbstractBaseEntity bean) {
+        if (!bean.isNew()) {
+            throw new IllegalRequestDataException(bean + " must be new (id=null)");
+        }
+    }
+
+    public static void assureIdConsistent(AbstractBaseEntity bean, int id) {
+        if (bean.isNew()) {
+            bean.setId(id);
+        } else if (bean.getId() != id) {
+            throw new IllegalRequestDataException(bean + " must be with id=" + id);
+        }
+    }
 
     //  http://stackoverflow.com/a/28565320/548473
     public static Throwable getRootCause(Throwable t) {

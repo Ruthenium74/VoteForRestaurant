@@ -29,6 +29,10 @@ public abstract class AbstractBaseEntity {
         this.id = id;
     }
 
+    public boolean isNew() {
+        return id == null;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

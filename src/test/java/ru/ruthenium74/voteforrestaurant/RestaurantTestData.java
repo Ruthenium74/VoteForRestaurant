@@ -19,4 +19,7 @@ public class RestaurantTestData {
     public static Restaurant getNew() {
         return new Restaurant("New Restaurant");
     }
+    public static Restaurant getUpdated() {
+        return new Restaurant(RESTAURANT1_ID, "new Name");
+    }
 }
