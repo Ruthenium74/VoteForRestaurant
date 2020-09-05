@@ -1,11 +1,14 @@
 package ru.ruthenium74.voteforrestaurant.web.dish;
 
 import org.slf4j.Logger;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import ru.ruthenium74.voteforrestaurant.exception.NotFountException;
 import ru.ruthenium74.voteforrestaurant.model.Dish;
+import ru.ruthenium74.voteforrestaurant.model.Restaurant;
 import ru.ruthenium74.voteforrestaurant.repository.CrudDishRepository;
 import ru.ruthenium74.voteforrestaurant.repository.CrudRestaurantRepository;
 import ru.ruthenium74.voteforrestaurant.web.restaurant.AdminRestaurantRestController;
@@ -13,6 +16,7 @@ import ru.ruthenium74.voteforrestaurant.web.restaurant.AdminRestaurantRestContro
 import java.net.URI;
 
 import static org.slf4j.LoggerFactory.getLogger;
+import static ru.ruthenium74.voteforrestaurant.util.ValidationUtil.assureIdConsistent;
 import static ru.ruthenium74.voteforrestaurant.util.ValidationUtil.checkNew;
 
 @RestController
@@ -42,5 +46,25 @@ public class AdminDishRestController {
                 .buildAndExpand(id, created.getId()).toUri();
 
         return ResponseEntity.created(uriOfNewResources).body(created);
+    }
+
+    @PutMapping(value = "/{restaurantId}/dishes/{dishId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void update(@PathVariable int restaurantId, @PathVariable int dishId, @RequestBody Dish dish) {
+        assureIdConsistent(dish, dishId);
+
+        log.info("Update dish {} for restaurant with id={}", dish, restaurantId);
+
+        Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() ->
+                new NotFountException(String.format("Restaurant with id=%d not found.", restaurantId))
+        );
+
+        if (!restaurant.getDishes().contains(dish)) {
+            throw new NotFountException(
+                    String.format("Dish with id=%d and with restaurantId=%d not found.", dishId, restaurantId)
+            );
+        }
+        dish.setRestaurant(restaurant);
+        dishRepository.save(dish);
     }
 }

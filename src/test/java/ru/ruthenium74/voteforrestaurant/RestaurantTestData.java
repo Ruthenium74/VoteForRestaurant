@@ -8,6 +8,7 @@ public class RestaurantTestData {
             TestMatcher.usingFieldsWithIgnoringAssertions(Restaurant.class, "dishes");
 
     public static final int RESTAURANT1_ID = AbstractBaseEntity.START_SEQ + 2;
+    public static final int WRONG_RESTAURANT_ID = 10;
 
     public static final Restaurant RESTAURANT1 = new Restaurant(RESTAURANT1_ID, "Сова");
     public static final Restaurant RESTAURANT2 = new Restaurant(RESTAURANT1_ID + 1, "Слон");

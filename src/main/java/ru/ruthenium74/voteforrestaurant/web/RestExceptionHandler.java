@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.ruthenium74.voteforrestaurant.exception.ErrorInfo;
 import ru.ruthenium74.voteforrestaurant.exception.ErrorType;
+import ru.ruthenium74.voteforrestaurant.exception.NotFountException;
 import ru.ruthenium74.voteforrestaurant.util.ValidationUtil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,8 +28,8 @@ public class RestExceptionHandler {
     private static final Logger log = LoggerFactory.getLogger(RestExceptionHandler.class);
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(EmptyResultDataAccessException.class)
-    public ErrorInfo notFound(HttpServletRequest request, EmptyResultDataAccessException e) {
+    @ExceptionHandler({EmptyResultDataAccessException.class, NotFountException.class})
+    public ErrorInfo notFound(HttpServletRequest request, Exception e) {
         return logAndGetErrorInfo(request, e, false, DATA_NOT_FOUND);
     }
 
