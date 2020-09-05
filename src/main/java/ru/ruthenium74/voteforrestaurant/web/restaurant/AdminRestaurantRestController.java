@@ -12,8 +12,7 @@ import ru.ruthenium74.voteforrestaurant.repository.CrudRestaurantRepository;
 import java.net.URI;
 
 import static org.slf4j.LoggerFactory.getLogger;
-import static ru.ruthenium74.voteforrestaurant.util.ValidationUtil.assureIdConsistent;
-import static ru.ruthenium74.voteforrestaurant.util.ValidationUtil.checkNew;
+import static ru.ruthenium74.voteforrestaurant.util.ValidationUtil.*;
 
 @RestController
 @RequestMapping(value = AdminRestaurantRestController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -47,5 +46,12 @@ public class AdminRestaurantRestController {
         log.info("Update restaurant {} with id={}", restaurant, id);
 
         restaurantRepository.save(restaurant);
+    }
+
+    @DeleteMapping(value = "/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable int id) {
+        restaurantRepository.deleteById(id);
+        log.info("Delete restaurant with id={}", id);
     }
 }

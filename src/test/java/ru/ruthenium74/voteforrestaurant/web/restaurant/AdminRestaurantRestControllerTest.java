@@ -13,6 +13,9 @@ import ru.ruthenium74.voteforrestaurant.repository.CrudRestaurantRepository;
 import ru.ruthenium74.voteforrestaurant.web.AbstractRestControllerTest;
 import ru.ruthenium74.voteforrestaurant.web.json.JsonUtil;
 
+import java.util.NoSuchElementException;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.ruthenium74.voteforrestaurant.RestaurantTestData.*;
 import static ru.ruthenium74.voteforrestaurant.TestUtil.readFromJson;
@@ -68,5 +71,19 @@ public class AdminRestaurantRestControllerTest extends AbstractRestControllerTes
         ).andExpect(status().isNoContent());
 
         RESTAURANT_MATCHER.assertMatch(restaurantRepository.findById(updated.getId()).orElseThrow(), updated);
+    }
+
+    @Test
+    void delete() throws Exception {
+        perform(MockMvcRequestBuilders
+                .delete(AdminRestaurantRestController.REST_URL + "/" + RESTAURANT1_ID)
+        ).andExpect(status().isNoContent());
+
+        assertThrows(NoSuchElementException.class,
+                () -> restaurantRepository.findById(RESTAURANT1_ID).orElseThrow());
+
+        perform(MockMvcRequestBuilders
+                .delete(AdminRestaurantRestController.REST_URL + "/" + RESTAURANT1_ID)
+        ).andExpect(status().isNotFound()).andExpect(errorType(ErrorType.DATA_NOT_FOUND));
     }
 }

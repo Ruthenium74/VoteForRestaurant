@@ -6,4 +6,5 @@ import ru.ruthenium74.voteforrestaurant.model.Restaurant;
 
 @Repository
 public interface CrudRestaurantRepository extends JpaRepository<Restaurant, Integer> {
+    void deleteById(int id);
 }
