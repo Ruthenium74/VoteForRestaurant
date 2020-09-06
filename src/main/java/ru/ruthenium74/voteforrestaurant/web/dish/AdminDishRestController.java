@@ -55,16 +55,35 @@ public class AdminDishRestController {
 
         log.info("Update dish {} for restaurant with id={}", dish, restaurantId);
 
-        Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() ->
-                new NotFountException(String.format("Restaurant with id=%d not found.", restaurantId))
-        );
+        Restaurant restaurant = getRestaurantIfExist(restaurantId);
 
-        if (!restaurant.getDishes().contains(dish)) {
-            throw new NotFountException(
-                    String.format("Dish with id=%d and with restaurantId=%d not found.", dishId, restaurantId)
-            );
-        }
+        assureRestaurantHasDish(restaurant, dishId);
         dish.setRestaurant(restaurant);
         dishRepository.save(dish);
+    }
+
+    @DeleteMapping(value = "/{restaurantId}/dishes/{dishId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable int restaurantId, @PathVariable int dishId) {
+        log.info("Delete dish with id={} for restaurant with id={}", dishId, restaurantId);
+
+        Restaurant restaurant = getRestaurantIfExist(restaurantId);
+        assureRestaurantHasDish(restaurant, dishId);
+
+        dishRepository.deleteById(dishId);
+    }
+
+    private Restaurant getRestaurantIfExist(int restaurantId) {
+        return restaurantRepository.findById(restaurantId).orElseThrow(() ->
+                new NotFountException(String.format("Restaurant with id=%d not found.", restaurantId))
+        );
+    }
+
+    private void assureRestaurantHasDish(Restaurant restaurant, int dishId) {
+        if (restaurant.getDishes().stream().noneMatch(dish -> dish.getId().equals(dishId))) {
+            throw new NotFountException(
+                    String.format("Dish with id=%d and with restaurantId=%d not found.", dishId, restaurant.getId())
+            );
+        }
     }
 }
