@@ -2,6 +2,8 @@ package ru.ruthenium74.voteforrestaurant;
 
 import ru.ruthenium74.voteforrestaurant.model.Dish;
 
+import java.util.List;
+
 public class DishTestData {
     public static TestMatcher<Dish> DISH_MATCHER =
             TestMatcher.usingFieldsWithIgnoringAssertions(Dish.class, "date", "restaurant");
@@ -31,6 +33,8 @@ public class DishTestData {
     public static final Dish DISH17 = new Dish(DISH1_ID + 16, "Хачапури по аджарски", 37000);
     public static final Dish DISH18 = new Dish(DISH1_ID + 17, "Чахохбили", 42000);
     public static final Dish DISH19 = new Dish(DISH1_ID + 18, "Саперави", 35000);
+
+    public static final List<Dish> DISHES_OF_RESTAURANT1 = List.of(DISH1, DISH2, DISH3, DISH4);
 
     public static Dish getNew() {
         return new Dish("new Dish", 40000);

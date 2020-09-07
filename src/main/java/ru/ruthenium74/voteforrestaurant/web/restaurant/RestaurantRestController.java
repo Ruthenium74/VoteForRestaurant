@@ -9,8 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.ruthenium74.voteforrestaurant.model.Restaurant;
 import ru.ruthenium74.voteforrestaurant.repository.CrudRestaurantRepository;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = RestaurantRestController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -24,10 +23,10 @@ public class RestaurantRestController {
     }
 
     @GetMapping
-    public Set<Restaurant> getAll(@RequestParam @Nullable boolean withDishes) {
+    public List<Restaurant> getAll(@RequestParam @Nullable boolean withDishes) {
         if (withDishes) {
             return restaurantRepository.getAllWithDishes();
         }
-        return new HashSet(restaurantRepository.findAll());
+        return restaurantRepository.findAll();
     }
 }

@@ -5,10 +5,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import ru.ruthenium74.voteforrestaurant.model.Restaurant;
 
-import java.util.Set;
+import java.util.List;
 
 @Repository
 public interface CrudRestaurantRepository extends JpaRepository<Restaurant, Integer> {
-    @Query("SELECT r FROM Restaurant r JOIN FETCH r.dishes dish where dish.date=current_date")
-    Set<Restaurant> getAllWithDishes();
+    @Query("SELECT DISTINCT r FROM Restaurant r JOIN FETCH r.dishes dish where dish.date=current_date ORDER BY r.id")
+    List<Restaurant> getAllWithDishes();
 }
