@@ -16,6 +16,7 @@ import ru.ruthenium74.voteforrestaurant.web.restaurant.AdminRestaurantRestContro
 import java.net.URI;
 
 import static org.slf4j.LoggerFactory.getLogger;
+import static ru.ruthenium74.voteforrestaurant.exception.NotFountException.getRestaurantNotFoundMessage;
 import static ru.ruthenium74.voteforrestaurant.util.ValidationUtil.assureIdConsistent;
 import static ru.ruthenium74.voteforrestaurant.util.ValidationUtil.checkNew;
 
@@ -75,7 +76,7 @@ public class AdminDishRestController {
 
     private Restaurant getRestaurantIfExist(int restaurantId) {
         return restaurantRepository.findById(restaurantId).orElseThrow(() ->
-                new NotFountException(String.format("Restaurant with id=%d not found.", restaurantId))
+                new NotFountException(getRestaurantNotFoundMessage(restaurantId))
         );
     }
 
