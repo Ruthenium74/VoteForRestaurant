@@ -8,7 +8,7 @@ public class DishTestData {
     public static TestMatcher<Dish> DISH_MATCHER =
             TestMatcher.usingFieldsWithIgnoringAssertions(Dish.class, "date", "restaurant");
 
-    public static final int DISH1_ID = RestaurantTestData.RESTAURANT6.getId() + 1;
+    public static final int DISH1_ID = 100008;
     public static final Dish DISH1 = new Dish(DISH1_ID, "Салат цезарь", 35000);
     public static final Dish DISH2 = new Dish(DISH1_ID + 1, "Борщ", 40000);
     public static final Dish DISH3 = new Dish(DISH1_ID + 2, "Пюре с котлетой", 50000);
