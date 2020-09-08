@@ -13,4 +13,7 @@ import java.util.Optional;
 public interface CrudDishRepository extends JpaRepository<Dish, Integer> {
     @Query("SELECT d FROM Dish d WHERE d.restaurant.id=:restaurantId AND d.date=current_date ORDER BY d.id")
     Optional<List<Dish>> getAll(@Param("restaurantId") int restaurantId);
+
+    @Query("SELECT d FROM Dish d WHERE d.restaurant.id=:restaurantId AND d.id=:dishId AND d.date=current_date")
+    Optional<Dish> get(@Param("restaurantId") int restaurantId, @Param("dishId") int dishId);
 }

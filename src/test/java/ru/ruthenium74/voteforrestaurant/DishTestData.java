@@ -36,6 +36,8 @@ public class DishTestData {
 
     public static final List<Dish> DISHES_OF_RESTAURANT1 = List.of(DISH1, DISH2, DISH3, DISH4);
 
+    public static final int WRONG_DISH_ID = 55;
+
     public static Dish getNew() {
         return new Dish("new Dish", 40000);
     }
